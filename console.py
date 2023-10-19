@@ -108,7 +108,7 @@ class HBNBCommand(cmd.Cmd):
             my_model = creating()
             my_model.save()
             print(my_model.id)
-    
+
     def do_show(self, line):
         """
         Show command to prints the string representation of
@@ -155,7 +155,7 @@ class HBNBCommand(cmd.Cmd):
                             del obj[key]
                             storage.save()
                             break
-    
+
     def do_all(self, line):
         """
         All command to print all string representation of
@@ -177,35 +177,47 @@ class HBNBCommand(cmd.Cmd):
             return
         creating = class_create(words_list[0])
         if type(creating) is str:
-            A
             print(creating)
         else:
             if len(words_list) == 1:
                 print("** instance id missing **")
-            elif len(words_list) < 1:
+            elif len(words_list) > 1:
                 instance = check_id(words_list[0], words_list[1])
                 if type(instance) is str:
                     print(instance)
+                    return
                 if len(words_list) == 2:
                     print("** attribute name missing **")
+                    return
                 elif len(words_list) == 3:
                     print("** value missing **")
+                    return
                 else:
                     if words_list[3][0] != '"':
                         words_list[3] = eval(words_list[3])
-                    B
-                    if len(words_list) == 5:
+                    elif words_list[3][0] == '"' and words_list[3][-1] == '"':
+                        words_list[3] = eval(words_list[3])
+                    if len(words_list) > 4:
                         if words_list[3][0] == '"':
-                            if words_list[4][-1] == '"':
-                                n = words_list[3][1:]
-                                m = words_list[4][0:-1]
-                                words_list[3] = n + " " + m
+                            if words_list[len(words_list) - 1][-1] == '"':
+                                m = words_list[3][1:]
+                                new_word = []
+                                for words in words_list[4:len(words_list) - 1]:
+                                    new_word.append(words)
+                                o = words_list[len(words_list) - 1][0:-1]
+                                if len(new_word) > 0:
+                                    n = ""
+                                    for word in new_word:
+                                        n = n + word + " "
+                                else:
+                                    n = " "
+                                words_list[3] = m + " " + n + o
                     obj = storage.all()
                     for key, value in obj.items():
                         if instance == value:
                             setattr(instance, words_list[2], words_list[3])
+                            value.save()
                             break
-                    value.save()
 
     def do_quit(self, line):
         """Quit command to exit the program"""
